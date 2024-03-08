@@ -20,10 +20,13 @@ namespace AddressableAssets.Loaders
 
         public async UniTask<TAsset> LoadAssetAsync(string key)
         {
+            Debug.Log($"LoadAssetAsync {key}");
             var handle = GetLoadHandle(key);
 
             try
             {
+                Debug.Log($"LoadAssetAsync");
+                
                 return await handle;
             }
             catch
@@ -85,11 +88,20 @@ namespace AddressableAssets.Loaders
 
         private AsyncOperationHandle<TAsset> GetLoadHandle(string key)
         {
+            if (_operationHandles == null)
+            {
+                Debug.Log($"GetLoadHandle null");
+                return default;
+            }
+            
             if (!_operationHandles.TryGetValue(key, out var handle))
             {
+                Debug.Log($"GetLoadHandle 1 {key}");
                 handle = Addressables.LoadAssetAsync<TAsset>(key);
                 _operationHandles.Add(key, handle);
             }
+            
+            Debug.Log($"GetLoadHandle 2 {key}");
 
             return handle;
         }
